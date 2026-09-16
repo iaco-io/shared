@@ -15,7 +15,7 @@
   --pink: rgb(208, 29, 124);
   --brown: rgb(149, 109, 81);
   --gray: rgb(142, 142, 147);
-  --subtle: rgb(229, 229, 234);
+  --subtle: rgb(180, 180, 180);
   --glass: rgb(0 0 0 / 2.2%);
 
   --gray-2: rgb(174, 174, 178);
@@ -30,7 +30,7 @@
   font: 16px var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;
-  color: var(fg);
+  color: var(--fg);
   background: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -58,7 +58,7 @@
     --pink: rgb(255, 138, 196);
     --brown: rgb(219, 166, 121);
     --gray: rgb(142, 142, 147);
-    --subtle: rgb(44, 44, 46);
+    --subtle: rgb(90, 90, 90);
     --glass: rgb(255 255 255 /10%);
 
     --gray-2: rgb(99, 99, 102);
