@@ -42,6 +42,7 @@
     height: 100dvh;
     padding-top: 30px;
     scrollbar-width: none;
+    box-sizing: border-box;
   }
 
   nav a {
