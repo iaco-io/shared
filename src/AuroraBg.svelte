@@ -8,7 +8,6 @@
     blend?: number
     time?: number
     speed?: number
-    isDarkTheme?: boolean
     style?: string
   }
 
@@ -18,9 +17,18 @@
     blend = 0.5,
     time,
     speed = 1.0,
-    isDarkTheme = false,
     style = '',
   }: Props = $props()
+
+  // identify if dark theme is active
+  let isDarkTheme = $state(false)
+  onMount(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+    isDarkTheme = media.matches
+    const update = () => (isDarkTheme = media.matches)
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  })
 
   // Reactive ref the rAF loop reads from.
   let current = $derived({ colorStops, amplitude, blend, time, speed })
