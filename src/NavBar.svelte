@@ -34,7 +34,7 @@
 <style>
   nav {
     position: absolute;
-    left: 0;
+    left: env(safe-area-inset-left);
     z-index: 10;
     display: flex;
     flex-direction: column;
