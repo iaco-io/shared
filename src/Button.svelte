@@ -5,21 +5,106 @@
     children,
     href,
     onclick,
+    onaltclick,
   }: {
     active?: boolean
     color?: string
     children?: any
     href?: string
     onclick?: (event?: MouseEvent) => void
+    onaltclick?: (event: PointerEvent | MouseEvent) => void
   } = $props()
+
+  const LONG_PRESS = 500
+  const MOVE_LIMIT = 10
+
+  let timer: ReturnType<typeof setTimeout> | undefined
+  let startX = 0
+  let startY = 0
+  let longPressed = false
+
+  function pointerDown(event: PointerEvent) {
+    // Right mouse button is handled by contextmenu instead
+    if (event.pointerType === 'mouse' && event.button === 2) {
+      return
+    }
+
+    startX = event.clientX
+    startY = event.clientY
+    longPressed = false
+
+    timer = setTimeout(() => {
+      longPressed = true
+      onaltclick?.(event)
+    }, LONG_PRESS)
+  }
+
+  function pointerMove(event: PointerEvent) {
+    if (
+      Math.abs(event.clientX - startX) > MOVE_LIMIT ||
+      Math.abs(event.clientY - startY) > MOVE_LIMIT
+    ) {
+      cancelPress()
+    }
+  }
+
+  function pointerUp() {
+    clearTimeout(timer)
+    timer = undefined
+  }
+
+  function cancelPress() {
+    clearTimeout(timer)
+    timer = undefined
+  }
+
+  function handleClick(event: MouseEvent) {
+    if (!longPressed) {
+      onclick?.(event)
+    }
+
+    longPressed = false
+  }
+
+  function handleContextMenu(event: MouseEvent) {
+    if (!longPressed) {
+      event.preventDefault()
+      onaltclick?.(event)
+    }
+
+    longPressed = false
+  }
 </script>
 
 {#if href}
-  <a {href} {onclick} class="glass-bg button" class:active style={`--color: ${color}`}>
+  <a
+    {href}
+    onclick={handleClick}
+    oncontextmenu={handleContextMenu}
+    onpointerdown={pointerDown}
+    onpointermove={pointerMove}
+    onpointerup={pointerUp}
+    onpointercancel={cancelPress}
+    onpointerleave={cancelPress}
+    class="glass-bg button"
+    class:active
+    style={`--color: ${color}`}
+  >
     {@render children?.()}
   </a>
 {:else}
-  <button {onclick} class="glass-bg button" class:active style={`--color: ${color}`}>
+  <button
+    onclick={handleClick}
+    oncontextmenu={handleContextMenu}
+    onpointerdown={pointerDown}
+    onpointermove={pointerMove}
+    onpointerup={pointerUp}
+    onpointercancel={cancelPress}
+    onpointerleave={cancelPress}
+    class="glass-bg button"
+    class:active
+    style={`--color: ${color}`}
+  >
     {@render children?.()}
   </button>
 {/if}
